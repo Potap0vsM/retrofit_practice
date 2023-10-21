@@ -2,6 +2,8 @@ package com.example.retrofit_practice;
 
 import android.util.Log;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -14,33 +16,31 @@ public class Server {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-
-    public String sendRequest(final CallbackResponse cr) {
-
-        final StringBuilder responseString = new StringBuilder();
-
+    public void sendRequest(final CallbackResponse cr) {
         Api api1 = api.create(Api.class);
-        Call<String> call = api1.getApi(56.9718363,23.96427, "616d6301b5f3df53c8ac834263baa03a");
+        Call<String> call = api1.getApi(56.9718363, 23.96427, "616d6301b5f3df53c8ac834263baa03a");
+
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    responseString.append(response.body());
                     Log.d("name", response.body());
                     cr.onResponse(response.body());
                 } else {
-                    cr.onFailure(new RuntimeException(":("));
+                    Log.e("API Error", "Error Status Code: " + response.code());
+                    try {
+                        Log.e("API Error", "Error Body: " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    cr.onFailure(new RuntimeException("Unsuccessful response: " + response.code()));
                 }
-                // TODO: обработка строки responseString (например, отображение в UI;
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                // Обрабатываем ошибку запроса (например, сетевые проблемы)
+                cr.onFailure(t);
             }
         });
-        return responseString.toString();
     }
 }
-
-
