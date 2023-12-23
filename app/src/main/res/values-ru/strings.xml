@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">retrofit_practice</string>
+    <string name="temp">Температура: </string>
+    <string name="hum">Влажность: </string>
+    <string name="pres">Давление: </string>
+    <string name="but">Включить</string>
+    <string name="img">Картинка</string>
+    <string name="weather">Погода: </string>
+</resources>

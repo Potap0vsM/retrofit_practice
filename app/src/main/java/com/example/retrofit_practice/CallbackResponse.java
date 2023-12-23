@@ -1,6 +1,7 @@
 package com.example.retrofit_practice;
 
 public interface CallbackResponse {
-    void onResponse(String s);
+    void onResponse(MethodResult mr);
+
     void onFailure(Throwable T);
 }

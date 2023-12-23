@@ -2,6 +2,8 @@ package com.example.retrofit_practice;
 
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.IOException;
 
 import retrofit2.Call;
@@ -10,26 +12,38 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Server {
+public class Server extends AppCompatActivity{
+    private final String LOG_TAG = Server.class.getName();
     Retrofit api = new Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
+            .baseUrl("https://api.openweathermap.org/data/2.5/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    public void sendRequest(final CallbackResponse cr) {
-        Api api1 = api.create(Api.class);
-        Call<String> call = api1.getApi(56.9718363, 23.96427, "616d6301b5f3df53c8ac834263baa03a");
 
-        call.enqueue(new Callback<String>() {
+
+    public void sendRequest(final CallbackResponse cr) {
+
+        MethodResult methodResult = new MethodResult();
+
+        Api api1 = api.create(Api.class);
+        Call<WeatherResponse> call = api1.getApi(56.9718363, 23.96427, "433433db0e6798772821078c9a682131");
+
+        call.enqueue(new Callback<WeatherResponse>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d("name", response.body());
-                    cr.onResponse(response.body());
+                    methodResult.setHum(response.body().getMain().getHumidity());
+                    methodResult.setPres(response.body().getMain().getPressure());
+                    methodResult.setTemp(response.body().getMain().getTemp());
+                    methodResult.setMain(response.body().getWeather().get(0).getMain());
+                    methodResult.setDescription(response.body().getWeather().get(0).getDescription());
+
+                    cr.onResponse(methodResult);
+                    Log.d(LOG_TAG, methodResult.toString());
                 } else {
-                    Log.e("API Error", "Error Status Code: " + response.code());
+                    Log.e(LOG_TAG, "Error Status Code: " + response.code());
                     try {
-                        Log.e("API Error", "Error Body: " + response.errorBody().string());
+                        Log.e(LOG_TAG, "Error Body: " + response.errorBody().string());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -38,8 +52,10 @@ public class Server {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
                 cr.onFailure(t);
+                Log.e(LOG_TAG, call.toString());
+                Log.e(LOG_TAG, t.toString());
             }
         });
     }
