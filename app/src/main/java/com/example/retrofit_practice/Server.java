@@ -26,8 +26,8 @@ public class Server extends AppCompatActivity{
         MethodResult methodResult = new MethodResult();
 
         Api api1 = api.create(Api.class);
-        Call<WeatherResponse> call = api1.getApi(56.9718363, 23.96427, "433433db0e6798772821078c9a682131");
-
+        //Call<WeatherResponse> call = api1.getApi(56.9718363, 23.96427, "433433db0e6798772821078c9a682131");
+        Call<WeatherResponse> call = api1.getApi(-77.26012196227117, 2.072663407562435, "433433db0e6798772821078c9a682131");
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
@@ -37,6 +37,7 @@ public class Server extends AppCompatActivity{
                     methodResult.setTemp(response.body().getMain().getTemp());
                     methodResult.setMain(response.body().getWeather().get(0).getMain());
                     methodResult.setDescription(response.body().getWeather().get(0).getDescription());
+                    methodResult.setIcon(response.body().getWeather().get(0).getIcon());
 
                     cr.onResponse(methodResult);
                     Log.d(LOG_TAG, methodResult.toString());

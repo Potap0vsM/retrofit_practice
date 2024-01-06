@@ -1,5 +1,7 @@
 package com.example.retrofit_practice;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 public class WeatherResponse {
@@ -14,6 +16,7 @@ public class WeatherResponse {
         this.main = main;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "WeatherResponse{" +
@@ -34,6 +37,7 @@ public class WeatherResponse {
     public class Weather{
         private String main;
         private String description;
+        private String icon;
 
         public String getMain() {
             return main;
@@ -49,6 +53,14 @@ public class WeatherResponse {
 
         public void setDescription(String description) {
             this.description = description;
+        }
+
+        public String getIcon() {
+            return icon;
+        }
+
+        public void setIcon(String icon) {
+            this.icon = icon;
         }
     }
 
@@ -81,6 +93,7 @@ public class WeatherResponse {
             this.humidity = humidity;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "Main{" +

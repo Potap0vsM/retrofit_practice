@@ -9,6 +9,8 @@ public class MethodResult {
     private String main;
     private String description;
 
+    private String icon;
+
     public void setTemp(float temp) {this.temp = temp;}
 
     public void setPres(int pres) {this.pres = pres;}
@@ -29,6 +31,15 @@ public class MethodResult {
 
     public void setDescription(String description) {this.description = description;}
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    @NonNull
     @Override
     public String toString() {
         return "MethodResult{" +
@@ -37,6 +48,7 @@ public class MethodResult {
                 ", hum=" + hum +
                 ", main='" + main + '\'' +
                 ", description='" + description + '\'' +
+                ", icon='" + icon + '\'' +
                 '}';
     }
 }
