@@ -1,10 +1,9 @@
 package com.example.retrofit_practice;
 
 import android.location.Location;
+import android.location.LocationListener;
 
 import androidx.annotation.NonNull;
-
-import com.google.android.gms.location.LocationListener;
 
 public class MyLocListener implements LocationListener {
     private LocListenerInterface locListenerInterface;

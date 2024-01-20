@@ -21,7 +21,10 @@ import androidx.core.app.ActivityCompat;
 public class MainActivity extends AppCompatActivity implements LocListenerInterface {
 
     private TextView checkCord;
-    private MyLocListener gpsTracking;
+    private MyLocListener myLocationListener;
+
+    private double lat;
+    private double lon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements LocListenerInterf
         ImageUpdate imageUpdate = new ImageUpdate();
 
 
-        btn.setOnClickListener(v -> server.sendRequest(new CallbackResponse() {
+        btn.setOnClickListener(v -> server.sendRequest(new CallbackResponse(){
             @Override
             public void onResponse(MethodResult mr) {
                 Log.d("method3", mr.toString());
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements LocListenerInterf
             public void onFailure(Throwable T) {
                 Log.d("no", "nuh-uh");
             }
-        }));
+        }, lat, lon));
 
 
     }
@@ -78,8 +81,8 @@ public class MainActivity extends AppCompatActivity implements LocListenerInterf
     private void init(){
         checkCord = findViewById(R.id.checkCord);
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        gpsTracking = new MyLocListener();
-        gpsTracking.setLocListenerInterface(this);
+        myLocationListener = new MyLocListener();
+        myLocationListener.setLocListenerInterface(this);
         checkPermissions();
     }
 
@@ -97,12 +100,14 @@ public class MainActivity extends AppCompatActivity implements LocListenerInterf
         {
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 100);
         } else{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0, (LocationListener) gpsTracking);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0, myLocationListener);
         }
     }
 
     @Override
     public void OnLocationChanged(Location loc) {
         checkCord.setText(String.valueOf(loc));
+        lat = loc.getLatitude();
+        lon = loc.getLongitude();
     }
 }

@@ -24,13 +24,12 @@ public class Server extends AppCompatActivity{
 
 
 
-    public void sendRequest(final CallbackResponse cr) {
+    public void sendRequest(final CallbackResponse cr, double lat, double lon) {
 
         MethodResult methodResult = new MethodResult();
 
         Api api1 = api.create(Api.class);
-        //Call<WeatherResponse> call = api1.getApi(56.9718363, 23.96427, "433433db0e6798772821078c9a682131");
-        Call<WeatherResponse> call = api1.getApi(-77.26012196227117, 2.072663407562435, "433433db0e6798772821078c9a682131");
+        Call<WeatherResponse> call = api1.getApi(lat, lon, "433433db0e6798772821078c9a682131");
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
