@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,11 +21,18 @@ import androidx.core.app.ActivityCompat;
 
 public class MainActivity extends AppCompatActivity implements LocListenerInterface {
 
-    private TextView checkCord;
     private MyLocListener myLocationListener;
 
     private double lat;
     private double lon;
+
+    Server server = new Server();
+    private TextView textView1;
+    private TextView textView2;
+    private TextView textView3;
+    private TextView weatherD;
+    private ImageView img;
+    ImageUpdate imageUpdate = new ImageUpdate();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,26 +41,39 @@ public class MainActivity extends AppCompatActivity implements LocListenerInterf
 
         init();
 
-        TextView textView1 = findViewById(R.id.textV1);
-        TextView textView2 = findViewById(R.id.textV2);
-        TextView textView3 = findViewById(R.id.textV3);
-        TextView weatherD = findViewById(R.id.wetaherD);
-        Button btn = findViewById(R.id.btn);
-        ImageView img = findViewById(R.id.imageView);
-        Server server = new Server();
+        textView1 = findViewById(R.id.textV1);
+        textView2 = findViewById(R.id.textV2);
+        textView3 = findViewById(R.id.textV3);
+        weatherD = findViewById(R.id.wetaherD);
+        img = findViewById(R.id.imageView);
+        ImageButton refresh = findViewById(R.id.imageButton);
+
+        img.setImageResource(0);
+
+        refresh.setOnClickListener(v -> onRefreshData());
+
+        onRefreshData();
+    }
+
+    private LocationManager locationManager;
+
+    private void init(){
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        myLocationListener = new MyLocListener();
+        myLocationListener.setLocListenerInterface(this);
+        checkPermissions();
+    }
 
 
-        ImageUpdate imageUpdate = new ImageUpdate();
-
-
-        btn.setOnClickListener(v -> server.sendRequest(new CallbackResponse(){
+    private void onRefreshData() {
+        server.sendRequest(new CallbackResponse() {
             @Override
             public void onResponse(MethodResult mr) {
                 Log.d("method3", mr.toString());
 
                 String text;
 
-                text = getString(R.string.temp) + " " + ((int) mr.getTemp()-273) + getString(R.string.celsius);
+                text = getString(R.string.temp) + " " + ((int) mr.getTemp() - 273) + getString(R.string.celsius);
                 textView1.setText(text);
 
                 text = getString(R.string.pres) + " " + ((int) mr.getPres());
@@ -71,19 +92,7 @@ public class MainActivity extends AppCompatActivity implements LocListenerInterf
             public void onFailure(Throwable T) {
                 Log.d("no", "nuh-uh");
             }
-        }, lat, lon));
-
-
-    }
-
-    private LocationManager locationManager;
-
-    private void init(){
-        checkCord = findViewById(R.id.checkCord);
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        myLocationListener = new MyLocListener();
-        myLocationListener.setLocListenerInterface(this);
-        checkPermissions();
+        }, lat, lon);
     }
 
     @Override
@@ -106,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements LocListenerInterf
 
     @Override
     public void OnLocationChanged(Location loc) {
-        checkCord.setText(String.valueOf(loc));
         lat = loc.getLatitude();
         lon = loc.getLongitude();
     }
